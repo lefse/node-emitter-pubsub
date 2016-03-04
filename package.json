@@ -1,0 +1,22 @@
+{
+  "name": "node-emitter",
+  "private": true,
+  "dependencies": {
+    "restler": ">= 3.x.x",
+    "underscore": "latest",
+    "onoff":   "0.3.x",
+    "node-wifiscanner": "0.0.1",
+    "serialport": "latest",
+    "nmea": "0.0.9",
+    "chainof": "latest",
+    "mqtt": "latest",
+    "url": "latest",
+    "node-internal-pubsub": "1.0.x",
+    "struct": "latest",
+    "aws-iot-device-sdk": "latest"
+  },
+  "version": "0.0.3",
+  "scripts": {
+    "start": "node app.js"
+  }
+}
