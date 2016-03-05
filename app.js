@@ -3,6 +3,11 @@ var utils  = require('./lib/utils');
 pubsub = require('node-internal-pubsub');
 publisher  = pubsub.createPublisher();
 
+var iot_topics = {
+  "topic": "/sensors",
+  "message": ""
+};
+
 var polling_period = 5000;
 
 var in_wifi = require('./lib/in/wifi/wifi_sensor'),
@@ -28,8 +33,9 @@ sub_wifi.on('message', function(channel, message) {
 });
 
 sub_temp.on('message', function(channel, message) {
-  console.log("Do something with :" + channel, message);
-  inout_aws_iot.APIsend(message);
+  iot_topics.topic = "/sensors/temperature";
+  iot_topics.message = message;
+  inout_aws_iot.APIsend(iot_topics);
 });
 
 sub_aws_iot.on('message', function(channel, message) {
