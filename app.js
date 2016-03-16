@@ -8,7 +8,8 @@ var iot_topics = {
   "message": ""
 };
 
-var polling_period = 5000;
+// Check temperature every 5 minutes.
+var polling_period = 300000;
 
 var in_wifi = require('./lib/in/wifi/wifi_sensor'),
     in_gps = require('./lib/in/gps/nmea-0183.js'),
@@ -33,13 +34,15 @@ sub_wifi.on('message', function(channel, message) {
 });
 
 sub_temp.on('message', function(channel, message) {
-  iot_topics.topic = "/sensors/temperature";
+  var obj = JSON.parse(message);
+  iot_topics.topic = "d48e2f11-2cdb-4429-8324-22c94120f68d/sensors/temperature/" + obj.id;
   iot_topics.message = message;
+  //console.log(iot_topics);
   inout_aws_iot.APIsend(iot_topics);
 });
 
 sub_aws_iot.on('message', function(channel, message) {
-  console.log("Do something with :" + channel, message);
+  console.log("Internal pubsub aws-iot:" + channel, message);
   // if(message.topic == "relay/set") {
   //     console.log(message.msg)
   //     if(message.msg == "true")   {
@@ -53,8 +56,11 @@ sub_aws_iot.on('message', function(channel, message) {
 });
 
 sub_gps.on('message', function(channel, message) {
-  console.log("Do something with :" + channel, message);
-  //console.log(message);
+  //console.log("Do something with :" + channel, message);
+  iot_topics.topic = "/sensors/gps";
+  iot_topics.message = message;
+  //inout_aws_iot.APIsend(iot_topics);
+  console.log(message);
 });
 
 // Check data from each sensor and publish to the channel if required.
@@ -65,8 +71,8 @@ function checkState(data){
   in_temp.check(data, function(data) {});
   //inout_aws_iot.APIsend(data, function(data) {});
 
-  // polling rate for check state. 5 second timeout.
-  setTimeout(checkState, 10000);
+  // polling rate for check state. 60 second timeout.
+  setTimeout(checkState, polling_period);
 }
 
 checkState({});
